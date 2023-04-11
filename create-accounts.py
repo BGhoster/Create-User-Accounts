@@ -9,17 +9,21 @@ def is_admin():
         return False
 
 def create_account():
-    # define constants
+    # Prompt the user for username and password
     username = ""
     password = ""
-    command = f"net user {username} {password} /add"
+
 
     while not username:
         username = input("Enter username: ")
-    # wait for the user to enter a non-empty password
     while not password:
         password = getpass("Enter password for account: ")
-    # run the command to create the user
+    
+
+    # Define the command to create the user
+    command = f"net user {username} {password} /add"
+
+    # Run the command to create the user
     try:
         result = subprocess.run(command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode == 0:
@@ -31,9 +35,12 @@ def create_account():
         print(f"Error creating user {username}.")
         print(e.stderr.decode())
 
+
 if is_admin():
     # Code of your program here
     create_account()
 else:
     # Re-run the program with admin rights
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+
+input("Press enter to exit")
