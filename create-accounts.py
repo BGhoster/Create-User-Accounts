@@ -2,6 +2,7 @@ import ctypes, sys
 import subprocess
 from getpass import getpass
 
+# Checks for admin privs
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -38,7 +39,15 @@ def create_account():
 
 if is_admin():
     # Code of your program here
-    create_account()
+    try:
+        print("ctrl-c to quit")
+        
+        # Runs the create account function until user presses ctrl-c
+        while True:
+            create_account()
+
+    except KeyboardInterrupt:
+        quit()
 else:
     # Re-run the program with admin rights
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
