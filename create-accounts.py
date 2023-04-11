@@ -55,6 +55,23 @@ def create_admin():
         print(f"Error making {account_name} admin.")
         print(e.stderr.decode())
 
+# Creates admin accounts
+def assign_account_to_group():
+    account_name = input("Account name: ")
+    group = input("What group should {account_name} be added to: ")
+    make_admin = f"net localgroup {group} {account_name} /add"
+
+    try:
+        create_admin_account = subprocess.run(make_admin, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if create_admin_account.returncode == 0:
+            print(f"{account_name} is now apart of {group} group")
+        else:
+            print(f"Error adding {account_name} to {group}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error making {account_name} admin.")
+        print(e.stderr.decode())
+
 if is_admin():
     # Code of your program here
     try:
@@ -63,7 +80,7 @@ if is_admin():
 
         while True:
             print("1. To Create account \t 2. Make account admin")
-            print("1. To Create account \t 2. Make account admin")
+            print("3. Manually add to group")
             print("-"*50)
 
             choice = input("Your choice: ")
@@ -72,8 +89,10 @@ if is_admin():
                 create_account()
             elif choice == "2":
                 create_admin()
+            elif choice == "3":
+                assign_account_to_group()
             else:
-                print("Please enter a valid choice (1 or 2)")
+                print("Please enter a valid choice (1-3)")
 
             switch_choice = input("Do you want to switch account types? (y/n) ")
 
@@ -84,6 +103,8 @@ if is_admin():
                 elif choice == "2":
                     print("Switching to create account")
                     choice = "1"
+                elif choice == 3:
+                    continue
             else:
                 break
 
