@@ -58,7 +58,7 @@ def create_admin():
 # Creates admin accounts
 def assign_account_to_group():
     account_name = input("Account name: ")
-    group = input("What group should {account_name} be added to: ")
+    group = input(f"What group should {account_name} be added to: ")
     make_admin = f"net localgroup {group} {account_name} /add"
 
     try:
