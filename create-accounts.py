@@ -9,6 +9,7 @@ def is_admin():
     except:
         return False
 
+# Creates standard accounts
 def create_account():
     # Prompt the user for username and password
     username = ""
@@ -27,15 +28,18 @@ def create_account():
     # Run the command to create the user
     try:
         result = subprocess.run(create_account, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
         if result.returncode == 0:
             print(f"User {username} created successfully.")
         else:
             print(f"Error creating user {username}.")
             print(result.stderr.decode())
+    
     except subprocess.CalledProcessError as e:
         print(f"Error creating user {username}.")
         print(e.stderr.decode())
 
+# Creates admin accounts
 def create_admin():
     account_name = input("What account do you want to make an admin: ")
     make_admin = f"net localgroup administrators {account_name} /add"
@@ -55,20 +59,33 @@ if is_admin():
     # Code of your program here
     try:
         print("ctrl-c to quit")
-        print("1. To Create account \t 2. Make account admin")
-        print("-"*50)
 
-        choice = int(input("Your choice: "))
-        
-        # Runs the create account function until user presses ctrl-c
-        if choice == 1:
-            while True:
+
+        while True:
+            print("1. To Create account \t 2. Make account admin")
+            print("1. To Create account \t 2. Make account admin")
+            print("-"*50)
+
+            choice = input("Your choice: ")
+
+            if choice == "1":
                 create_account()
-        elif choice == 2:
-            while True:
+            elif choice == "2":
                 create_admin()
-        else:
-            print("Please pick a number listed")
+            else:
+                print("Please enter a valid choice (1 or 2)")
+
+            switch_choice = input("Do you want to switch account types? (y/n) ")
+
+            if switch_choice.lower() == "y":
+                if choice == "1":
+                    print("Switching to create admin account")
+                    choice = "2"
+                elif choice == "2":
+                    print("Switching to create account")
+                    choice = "1"
+            else:
+                break
 
     except KeyboardInterrupt:
         quit()
