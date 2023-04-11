@@ -68,7 +68,7 @@ if is_admin():
             while True:
                 create_admin()
         else:
-            print("Fail")
+            print("Please pick a number listed")
 
     except KeyboardInterrupt:
         quit()
