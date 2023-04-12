@@ -98,11 +98,9 @@ if is_admin():
 
             if switch_choice.lower() == "y":
                 if choice == "1":
-                    print("Switching to create admin account")
-                    choice = "2"
+                    continue
                 elif choice == "2":
-                    print("Switching to create account")
-                    choice = "1"
+                    continue
                 elif choice == 3:
                     continue
             else:
