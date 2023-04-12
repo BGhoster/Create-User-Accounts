@@ -57,10 +57,23 @@ def create_admin():
 
 # Creates admin accounts
 def assign_account_to_group():
+    get_groups = "net localgroup"
+    try:
+        get_all_groups = subprocess.run(get_groups, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if get_all_groups.returncode == 0:
+            print("All groups are listed")
+            print(get_all_groups)
+        else:
+            print(f"Error getting groups")
+    except subprocess.CalledProcessError as e:
+        print(f"Error getting all group.")
+        print(e.stderr.decode())
+
     account_name = input("Account name: ")
     group = input(f"What group should {account_name} be added to: ")
     make_admin = f"net localgroup {group} {account_name} /add"
-
+    
     try:
         create_admin_account = subprocess.run(make_admin, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
