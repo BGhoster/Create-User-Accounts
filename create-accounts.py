@@ -63,7 +63,9 @@ def assign_account_to_group():
 
         if get_all_groups.returncode == 0:
             print("All groups are listed")
-            print(get_all_groups)
+            for group in get_all_groups.stdout.decode().splitlines():
+                if group:
+                    print(group)
         else:
             print(f"Error getting groups")
     except subprocess.CalledProcessError as e:
