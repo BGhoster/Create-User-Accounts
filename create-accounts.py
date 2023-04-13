@@ -55,7 +55,7 @@ def create_admin():
         print(f"Error making {account_name} admin.")
         print(e.stderr.decode())
 
-# Creates admin accounts
+# Assign accounts to groups
 def assign_account_to_group():
     get_groups = "net localgroup"
     try:
@@ -98,8 +98,13 @@ if is_admin():
             print("3. Manually add to group")
             print("-"*50)
 
-            choice = input("Your choice: ")
+            # Valildates the user entered a number
+            try:
+                choice = int(input("Your choice: "))
+            except ValueError:
+                print("Please enter a number")
 
+            # Change to dict to allow user to stay on their original choice
             if choice == "1":
                 create_account()
             elif choice == "2":
@@ -112,12 +117,10 @@ if is_admin():
             switch_choice = input("Do you want to switch account types? (y/n) ")
 
             if switch_choice.lower() == "y":
-                if choice == "1":
+                if choice == 1 or choice == 2 or choice == 3:
                     continue
-                elif choice == "2":
-                    continue
-                elif choice == 3:
-                    continue
+            elif switch_choice.lower() == "n":
+                choice == choice
             else:
                 break
 
