@@ -116,7 +116,7 @@ if is_admin():
             else:
                 print("Please enter a valid choice (1-3)")
 
-            switch_choice = input("Do you want to switch account types? (y/n) ")
+            switch_choice = input("Do you want to switch choice? (y/n) ")
 
             if switch_choice.lower() == "y":
                 if choice == 1 or choice == 2 or choice == 3:
