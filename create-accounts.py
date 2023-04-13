@@ -11,16 +11,18 @@ def is_admin():
 
 # Creates standard accounts
 def create_account():
-    # Prompt the user for username and password
-    username = ""
-    password = ""
 
-
-    while not username:
-        username = input("Enter username: ")
-    while not password:
-        password = getpass("Enter password for account: ")
+    username = input("Enter username: ")
     
+    password = getpass("Enter password for account: ")
+    check_password = getpass("Enter password again: ")
+
+    while password != check_password:
+        # Keeps reprompting until password matches
+        print("Passwords do not match")
+        password = getpass("Enter password for account: ")
+        check_password = getpass("Enter password again: ")
+
 
     # Define the command to create the user
     create_account = f"net user {username} {password} /add"
@@ -92,7 +94,6 @@ if is_admin():
     try:
         print("ctrl-c to quit")
 
-
         while True:
             print("1. To Create account \t 2. Make account admin")
             print("3. Manually add to group")
@@ -104,13 +105,14 @@ if is_admin():
             except ValueError:
                 print("Please enter a number")
 
-            # Change to dict to allow user to stay on their original choice
-            if choice == "1":
-                create_account()
-            elif choice == "2":
-                create_admin()
-            elif choice == "3":
-                assign_account_to_group()
+            options = {
+                1: create_account,
+                2: create_admin,
+                3: assign_account_to_group
+            }
+
+            if choice in options:
+                options[choice]()
             else:
                 print("Please enter a valid choice (1-3)")
 
@@ -120,7 +122,7 @@ if is_admin():
                 if choice == 1 or choice == 2 or choice == 3:
                     continue
             elif switch_choice.lower() == "n":
-                choice == choice
+                options[choice]()
             else:
                 break
 
