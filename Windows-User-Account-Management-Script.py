@@ -128,13 +128,14 @@ if is_admin():
                 4: delete_account,
             }
 
+            # Runs the funciton based of user input
             if choice in options:
                 options[choice]()
             else:
                 print("Please enter a valid choice (1-4)")
 
+            # Askes if the user want to change their choice
             switch_choice = input("Do you want to switch choice? (y/n) ")
-
             if switch_choice.lower() == "y":
                 if choice == 1 or choice == 2 or choice == 3:
                     continue
