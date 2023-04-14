@@ -89,6 +89,22 @@ def assign_account_to_group():
         print(f"Error making {account_name} admin.")
         print(e.stderr.decode())
 
+def delete_account():
+    username = input("Account to delete")
+    delete_account_command = f"net user {username} /DELETE"
+
+    try:
+        delete_account = subprocess.run(delete_account_command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if delete_account.returncode == 0:
+            print(f"{username} was successfully deleted")
+        else:
+            print("Failed to delete account")
+    except subprocess.CalledProcessError as e:
+        print("An error hsa happened in delete account")
+        print(e.stderr.decode())
+
+
 if is_admin():
     # Code of your program here
     try:
@@ -108,13 +124,14 @@ if is_admin():
             options = {
                 1: create_account,
                 2: create_admin,
-                3: assign_account_to_group
+                3: assign_account_to_group,
+                4: delete_account,
             }
 
             if choice in options:
                 options[choice]()
             else:
-                print("Please enter a valid choice (1-3)")
+                print("Please enter a valid choice (1-4)")
 
             switch_choice = input("Do you want to switch choice? (y/n) ")
 
@@ -122,7 +139,8 @@ if is_admin():
                 if choice == 1 or choice == 2 or choice == 3:
                     continue
             elif switch_choice.lower() == "n":
-                options[choice]()
+                while True:
+                    options[choice]()
             else:
                 break
 
