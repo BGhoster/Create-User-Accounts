@@ -90,7 +90,22 @@ def assign_account_to_group():
         print(e.stderr.decode())
 
 def delete_account():
-    username = input("Account to delete")
+    list_accounts = "net user"
+    try:
+        all_accounts = subprocess.run(list_accounts, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if all_accounts.returncode == 0:
+            print("All Local Accounts are listed")
+            for accounts in all_accounts.stdout.decode().splitlines():
+                if accounts:
+                    print(accounts)
+        else:
+            print(f"Error getting acounts")
+    except subprocess.CalledProcessError as e:
+        print(f"Error getting all accounts.")
+        print(e.stderr.decode())
+
+    username = input("Account to delete: ")
     delete_account_command = f"net user {username} /DELETE"
 
     try:
@@ -112,7 +127,8 @@ if is_admin():
 
         while True:
             print("1. To Create account \t 2. Make account admin")
-            print("3. Manually add to group")
+            print("3. Manually add to group 4. Delete account")
+            print("5. Quit program")
             print("-"*50)
 
             # Valildates the user entered a number
@@ -126,6 +142,7 @@ if is_admin():
                 2: create_admin,
                 3: assign_account_to_group,
                 4: delete_account,
+                5: quit,
             }
 
             # Runs the funciton based of user input
