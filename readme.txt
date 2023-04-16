@@ -1,19 +1,33 @@
-README for Windows User Account Management Script
-This script is designed for Windows operating systems to manage user accounts, including creating accounts, making accounts administrators, adding accounts to specific groups, and deleting accounts. The script uses Python's subprocess module to run Windows command-line commands.
+Windows User Management
+This Python script provides functions to manage local user accounts on a Windows machine. This script requires administrative privileges to run.
 
 Prerequisites
-Python 3.x is required to run this script. It should work on most versions of Windows.
+This script requires Python 3.6 or higher to be installed on the Windows machine. Administrative privileges are also required to create, delete, or modify user accounts.
 
-Usage
-Clone or download the repository to your local machine.
-Open a command prompt or terminal window in the directory containing the script.
-Run the script with administrator privileges. The script will prompt you to enter the administrator credentials if you do not have the necessary permissions.
-Follow the on-screen prompts to create accounts, make accounts administrators, add accounts to specific groups, or delete accounts.
+Functions
+The following functions are provided by this script:
 
-Important Notes
-Be careful when using this script, as it has the potential to make significant changes to your system.
-Always run the script with administrator privileges to avoid permission issues.
-Before creating an account, ensure that the username is unique and does not already exist on the system.
-The script only works on Windows systems.
-The script does not provide any feedback when entering passwords, so be sure to enter the password correctly.
-The script is designed for command-line use and may not have a user-friendly interface.
+create_account(): This function creates a standard user account. The user is prompted to enter a username and password for the new account.
+
+create_admin(): This function adds an existing user account to the Administrators group.
+
+assign_account_to_group(): This function adds an existing user account to a specified group.
+
+delete_account(): This function deletes an existing user account.
+
+enable_disable_account(): This function enables or disables an existing user account.
+
+
+Navigate to the directory containing the script.
+
+Run the script using the following command:
+
+Copy code
+python Windows-User-Account-Management.py
+Follow the prompts to perform user management tasks.
+
+Example
+To create a new user account, run the script and choose the Create Account option. Enter a username and password for the new account when prompted. The script will create the account and provide a success message if the operation is successful.
+
+Disclaimer
+Use this script at your own risk. The author is not responsible for any damages or losses that may result from the use of this script.

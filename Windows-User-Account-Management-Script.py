@@ -116,8 +116,39 @@ def delete_account():
         else:
             print("Failed to delete account")
     except subprocess.CalledProcessError as e:
-        print("An error hsa happened in delete account")
+        print("An error has happened in delete account")
         print(e.stderr.decode())
+
+def enable_disable_account():
+    ask_to_enable_disable = input("Would you like to enable or disable: ")
+    username = input("Enter the username: ")
+    enable_account_command = f"net user {username} /ACTIVE:yes"
+    disable_account_command = f"net user {username} /ACTIVE:no"
+
+    if ask_to_enable_disable == "enable":
+        try:
+            enable_account = subprocess.run(enable_account_command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            if enable_account.returncode == 0:
+                print(f"{username} was successfully enabled")
+            else:
+                print("Failed to enable account")
+        except subprocess.CalledProcessError as e:
+            print("An error has happened when enabling account")
+            print(e.stderr.decode())
+
+    if ask_to_enable_disable == "disable":
+        try:
+            disable_account = subprocess.run(disable_account_command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            if disable_account.returncode == 0:
+                print(f"{username} was successfully disabled")
+            else:
+                print("Failed to disabled account")
+        except subprocess.CalledProcessError as e:
+            print("An error has happened when disabling account")
+            print(e.stderr.decode())
+
 
 
 if is_admin():
@@ -126,9 +157,9 @@ if is_admin():
         print("ctrl-c to quit")
 
         while True:
-            print("1. To Create account \t 2. Make account admin")
-            print("3. Manually add to group 4. Delete account")
-            print("5. Quit program")
+            print("1. To Create account \t   2. Make account admin")
+            print("3. Manually add to group   4. Delete account")
+            print("5. Enable/Disable Accounts 6. Quit program")
             print("-"*50)
 
             # Valildates the user entered a number
@@ -142,7 +173,8 @@ if is_admin():
                 2: create_admin,
                 3: assign_account_to_group,
                 4: delete_account,
-                5: quit,
+                5: enable_disable_account,
+                6: quit,
             }
 
             # Runs the funciton based of user input
