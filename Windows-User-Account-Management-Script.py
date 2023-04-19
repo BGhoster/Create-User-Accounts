@@ -1,6 +1,14 @@
 import ctypes, sys
 import subprocess
 from getpass import getpass
+import logging
+from datetime import datetime
+
+# Set up logging
+logging.basicConfig(filename='account-management.log', level=logging.INFO)
+
+# log account creation
+now = datetime.now()
 
 # Checks if the user running the script has administrator privileges
 def is_admin():
@@ -34,9 +42,11 @@ def create_account():
         # Check if the command was successful and print an appropriate message
         if result.returncode == 0:
             print(f"User {username} created successfully.")
+            logging.info(f"Account {username} created successfully {now}")
         else:
             print(f"Error creating user {username}.")
             print(result.stderr.decode())
+            logging.critical(f"Failed to create user {username} {now}")
     
     except subprocess.CalledProcessError as e:
         print(f"Error creating user {username}.")
@@ -54,6 +64,8 @@ def create_admin():
             print(f"{account_name} is now apart of administrator group")
         else:
             print(f"Error making {account_name} admin")
+            logging.critical(f"Failed to make {account_name} administrator {now}")
+
     except subprocess.CalledProcessError as e:
         print(f"Error making {account_name} admin.")
         print(e.stderr.decode())
@@ -76,6 +88,7 @@ def assign_account_to_group():
     except subprocess.CalledProcessError as e:
         print(f"Error getting all group.")
         print(e.stderr.decode())
+        logging.error(f"Failed to get all local groups {now}")
 
     # Get the account name and the group name from the user
     account_name = input("Account name: ")
@@ -139,6 +152,7 @@ def enable_disable_account():
                 print(f"{username} was successfully enabled")
             else:
                 print("Failed to enable account")
+                logging.info(f"Failed to enable account: {username} {now}")
         except subprocess.CalledProcessError as e:
             print("An error has happened when enabling account")
             print(e.stderr.decode())
@@ -151,6 +165,7 @@ def enable_disable_account():
                 print(f"{username} was successfully disabled")
             else:
                 print("Failed to disabled account")
+                logging.info(f"Failed to disable account {username} {now}")
         except subprocess.CalledProcessError as e:
             print("An error has happened when disabling account")
             print(e.stderr.decode())
