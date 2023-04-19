@@ -2,14 +2,14 @@ import ctypes, sys
 import subprocess
 from getpass import getpass
 
-# Checks for admin privs
+# Checks if the user running the script has administrator privileges
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         return False
 
-# Creates standard accounts
+# Function to create a standard user account
 def create_account():
 
     username = input("Enter username: ")
@@ -17,8 +17,8 @@ def create_account():
     password = getpass("Enter password for account: ")
     check_password = getpass("Enter password again: ")
 
+    # Verify that the password was entered correctly
     while password != check_password:
-        # Keeps reprompting until password matches
         print("Passwords do not match")
         password = getpass("Enter password for account: ")
         check_password = getpass("Enter password again: ")
@@ -31,6 +31,7 @@ def create_account():
     try:
         result = subprocess.run(create_account, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
+        # Check if the command was successful and print an appropriate message
         if result.returncode == 0:
             print(f"User {username} created successfully.")
         else:
@@ -41,7 +42,7 @@ def create_account():
         print(f"Error creating user {username}.")
         print(e.stderr.decode())
 
-# Creates admin accounts
+# Function to create an admin user account
 def create_admin():
     account_name = input("What account do you want to make an admin: ")
     make_admin = f"net localgroup administrators {account_name} /add"
@@ -57,12 +58,14 @@ def create_admin():
         print(f"Error making {account_name} admin.")
         print(e.stderr.decode())
 
-# Assign accounts to groups
+# Function to assign a user account to a group
 def assign_account_to_group():
+    # Command to list all local group
     get_groups = "net localgroup"
     try:
         get_all_groups = subprocess.run(get_groups, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+        # Print the list of all the local groups on the system
         if get_all_groups.returncode == 0:
             print("All groups are listed")
             for group in get_all_groups.stdout.decode().splitlines():
@@ -74,8 +77,11 @@ def assign_account_to_group():
         print(f"Error getting all group.")
         print(e.stderr.decode())
 
+    # Get the account name and the group name from the user
     account_name = input("Account name: ")
     group = input(f"What group should {account_name} be added to: ")
+
+    # Command to add user to local group
     make_admin = f"net localgroup {group} {account_name} /add"
     
     try:
