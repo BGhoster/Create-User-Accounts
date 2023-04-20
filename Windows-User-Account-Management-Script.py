@@ -17,99 +17,39 @@ def is_admin():
     except:
         return False
 
-# Function to create a standard user account
 def create_account():
-
     username = input("Enter username: ")
-    
+    password = check_password()
+
+    create_account_cmd = f"net user {username} {password} /add"
+    run_cmd(create_account_cmd, f"User {username} created successfully.", f"Error creating user {username}.", f"Failed to create user {username} {now}")
+
+def create_admin():
+    account_name = input("What account do you want to make an admin: ")
+    make_admin_cmd = f"net localgroup administrators {account_name} /add"
+
+    run_cmd(make_admin_cmd, f"{account_name} is now apart of administrator group", f"Error making {account_name} admin", f"Failed to make {account_name} administrator {now}")
+
+def assign_account_to_group():
+    get_groups_cmd = "net localgroup"
+
+    run_cmd(get_groups_cmd, "All groups are listed", "Error getting groups", f"Failed to get all local groups {now}")
+
+def check_password():
     password = getpass("Enter password for account: ")
     check_password = getpass("Enter password again: ")
 
-    # Verify that the password was entered correctly
     while password != check_password:
         print("Passwords do not match")
         password = getpass("Enter password for account: ")
         check_password = getpass("Enter password again: ")
 
-
-    # Define the command to create the user
-    create_account = f"net user {username} {password} /add"
-
-    # Run the command to create the user
-    try:
-        result = subprocess.run(create_account, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        # Check if the command was successful and print an appropriate message
-        if result.returncode == 0:
-            print(f"User {username} created successfully.")
-            logging.info(f"Account {username} created successfully {now}")
-        else:
-            print(f"Error creating user {username}.")
-            print(result.stderr.decode())
-            logging.critical(f"Failed to create user {username} {now}")
-    
-    except subprocess.CalledProcessError as e:
-        print(f"Error creating user {username}.")
-        print(e.stderr.decode())
-
-# Function to create an admin user account
-def create_admin():
-    account_name = input("What account do you want to make an admin: ")
-    make_admin = f"net localgroup administrators {account_name} /add"
-
-    try:
-        create_admin_account = subprocess.run(make_admin, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        if create_admin_account.returncode == 0:
-            print(f"{account_name} is now apart of administrator group")
-        else:
-            print(f"Error making {account_name} admin")
-            logging.critical(f"Failed to make {account_name} administrator {now}")
-
-    except subprocess.CalledProcessError as e:
-        print(f"Error making {account_name} admin.")
-        print(e.stderr.decode())
-
-# Function to assign a user account to a group
-def assign_account_to_group():
-    # Command to list all local group
-    get_groups = "net localgroup"
-    try:
-        get_all_groups = subprocess.run(get_groups, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        # Print the list of all the local groups on the system
-        if get_all_groups.returncode == 0:
-            print("All groups are listed")
-            for group in get_all_groups.stdout.decode().splitlines():
-                if group:
-                    print(group)
-        else:
-            print(f"Error getting groups")
-    except subprocess.CalledProcessError as e:
-        print(f"Error getting all group.")
-        print(e.stderr.decode())
-        logging.error(f"Failed to get all local groups {now}")
-
-    # Get the account name and the group name from the user
-    account_name = input("Account name: ")
-    group = input(f"What group should {account_name} be added to: ")
-
-    # Command to add user to local group
-    make_admin = f"net localgroup {group} {account_name} /add"
-    
-    try:
-        create_admin_account = subprocess.run(make_admin, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        if create_admin_account.returncode == 0:
-            print(f"{account_name} is now apart of {group} group")
-        else:
-            print(f"Error adding {account_name} to {group}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error making {account_name} admin.")
-        print(e.stderr.decode())
+    return password
 
 def delete_account():
     list_accounts = "net user"
+    run_cmd(list_accounts, "Got all users successfully", "Failed to get all users", f"All users {now}")
+
     try:
         all_accounts = subprocess.run(list_accounts, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -119,7 +59,7 @@ def delete_account():
                 if accounts:
                     print(accounts)
         else:
-            print(f"Error getting acounts")
+            print(f"Error getting accounts")
     except subprocess.CalledProcessError as e:
         print(f"Error getting all accounts.")
         print(e.stderr.decode())
@@ -127,16 +67,7 @@ def delete_account():
     username = input("Account to delete: ")
     delete_account_command = f"net user {username} /DELETE"
 
-    try:
-        delete_account = subprocess.run(delete_account_command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        if delete_account.returncode == 0:
-            print(f"{username} was successfully deleted")
-        else:
-            print("Failed to delete account")
-    except subprocess.CalledProcessError as e:
-        print("An error has happened in delete account")
-        print(e.stderr.decode())
+    run_cmd(delete_account_command, "Account successfully deleted", "Error deleting account", "Error deleting account")
 
 def enable_disable_account():
     ask_to_enable_disable = input("Would you like to enable or disable: ")
@@ -171,6 +102,26 @@ def enable_disable_account():
             print(e.stderr.decode())
 
 
+def run_cmd(cmd, success_msg, error_msg, log_msg):
+    try:
+        result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if result.returncode == 0:
+            print(success_msg)
+            logging.info(log_msg)
+        else:
+            print(error_msg)
+            print(result.stderr.decode())
+            logging.critical(log_msg)
+
+    except subprocess.CalledProcessError as e:
+        print(error_msg)
+        print(e.stderr.decode())
+        logging.error(log_msg)
+
+
+
+
 
 if is_admin():
     # Code of your program here
@@ -202,7 +153,7 @@ if is_admin():
             if choice in options:
                 options[choice]()
             else:
-                print("Please enter a valid choice (1-4)")
+                print("Please enter a valid choice (1-6)")
 
             # Askes if the user want to change their choice
             switch_choice = input("Do you want to switch choice? (y/n) ")
