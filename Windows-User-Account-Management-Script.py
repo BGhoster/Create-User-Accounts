@@ -18,6 +18,7 @@ def is_admin():
         return False
 
 def create_account():
+    """Creates local accounts"""
     username = input("Enter username: ")
     password = check_password()
 
@@ -47,6 +48,7 @@ def check_password():
     return password
 
 def delete_account():
+    """Deletes account off computer"""
     list_accounts = "net user"
     run_cmd(list_accounts, "Got all users successfully", "Failed to get all users", f"All users {now}", f"Failed to get all {now}")
 
@@ -70,6 +72,7 @@ def delete_account():
     run_cmd(delete_account_command, "Account successfully deleted", "Error deleting account", f"Successfully delete {username} account", f"Failed to delete {username}")
 
 def enable_disable_account():
+    """Enables or Disable accounts on machine"""
     ask_to_enable_disable = input("Would you like to enable or disable: ")
     username = input("Enter the username: ")
     enable_account_command = f"net user {username} /ACTIVE:yes"
@@ -118,10 +121,6 @@ def run_cmd(cmd, success_msg, error_msg, success_log_msg, failed_log_msg):
         print(error_msg)
         print(e.stderr.decode())
         logging.error(failed_log_msg)
-
-
-
-
 
 if is_admin():
     # Code of your program here
