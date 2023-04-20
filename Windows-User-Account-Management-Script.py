@@ -22,18 +22,18 @@ def create_account():
     password = check_password()
 
     create_account_cmd = f"net user {username} {password} /add"
-    run_cmd(create_account_cmd, f"User {username} created successfully.", f"Error creating user {username}.", f"Failed to create user {username} {now}")
+    run_cmd(create_account_cmd, f"User {username} created successfully.", f"Error creating user {username}.", f"Create user {username} {now}", f"Failed to create {username} {now}")
 
 def create_admin():
     account_name = input("What account do you want to make an admin: ")
     make_admin_cmd = f"net localgroup administrators {account_name} /add"
 
-    run_cmd(make_admin_cmd, f"{account_name} is now apart of administrator group", f"Error making {account_name} admin", f"Failed to make {account_name} administrator {now}")
+    run_cmd(make_admin_cmd, f"{account_name} is now apart of administrator group", f"Error making {account_name} admin", f" {account_name} is now administrator {now}", f"Failed to create {account_name} {now}")
 
 def assign_account_to_group():
     get_groups_cmd = "net localgroup"
 
-    run_cmd(get_groups_cmd, "All groups are listed", "Error getting groups", f"Failed to get all local groups {now}")
+    run_cmd(get_groups_cmd, "All groups are listed", "Error getting groups", f"Get all users {now}", f"Failed to get all user {now}")
 
 def check_password():
     password = getpass("Enter password for account: ")
@@ -48,7 +48,7 @@ def check_password():
 
 def delete_account():
     list_accounts = "net user"
-    run_cmd(list_accounts, "Got all users successfully", "Failed to get all users", f"All users {now}")
+    run_cmd(list_accounts, "Got all users successfully", "Failed to get all users", f"All users {now}", f"Failed to get all {now}")
 
     try:
         all_accounts = subprocess.run(list_accounts, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -67,7 +67,7 @@ def delete_account():
     username = input("Account to delete: ")
     delete_account_command = f"net user {username} /DELETE"
 
-    run_cmd(delete_account_command, "Account successfully deleted", "Error deleting account", "Error deleting account")
+    run_cmd(delete_account_command, "Account successfully deleted", "Error deleting account", f"Successfully delete {username} account", f"Failed to delete {username}")
 
 def enable_disable_account():
     ask_to_enable_disable = input("Would you like to enable or disable: ")
@@ -102,22 +102,22 @@ def enable_disable_account():
             print(e.stderr.decode())
 
 
-def run_cmd(cmd, success_msg, error_msg, log_msg):
+def run_cmd(cmd, success_msg, error_msg, success_log_msg, failed_log_msg):
     try:
         result = subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if result.returncode == 0:
             print(success_msg)
-            logging.info(log_msg)
+            logging.info(success_log_msg)
         else:
             print(error_msg)
             print(result.stderr.decode())
-            logging.critical(log_msg)
+            logging.critical(failed_log_msg)
 
     except subprocess.CalledProcessError as e:
         print(error_msg)
         print(e.stderr.decode())
-        logging.error(log_msg)
+        logging.error(failed_log_msg)
 
 
 
