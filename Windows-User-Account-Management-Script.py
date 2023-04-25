@@ -26,17 +26,20 @@ def create_account():
     run_cmd(create_account_cmd, f"User {username} created successfully.", f"Error creating user {username}.", f"Create user {username} {now}", f"Failed to create {username} {now}")
 
 def create_admin():
+    """Creates local admin accounts"""
     account_name = input("What account do you want to make an admin: ")
     make_admin_cmd = f"net localgroup administrators {account_name} /add"
 
     run_cmd(make_admin_cmd, f"{account_name} is now apart of administrator group", f"Error making {account_name} admin", f" {account_name} is now administrator {now}", f"Failed to create {account_name} {now}")
 
 def assign_account_to_group():
+    """Assign account to group"""
     get_groups_cmd = "net localgroup"
 
     run_cmd(get_groups_cmd, "All groups are listed", "Error getting groups", f"Get all users {now}", f"Failed to get all user {now}")
 
 def check_password():
+    """Verifies password to create account"""
     password = getpass("Enter password for account: ")
     check_password = getpass("Enter password again: ")
 
@@ -48,7 +51,7 @@ def check_password():
     return password
 
 def delete_account():
-    """Deletes account off computer"""
+    """Deletes local account off computer"""
     list_accounts = "net user"
     run_cmd(list_accounts, "Got all users successfully", "Failed to get all users", f"All users {now}", f"Failed to get all {now}")
 
@@ -104,6 +107,29 @@ def enable_disable_account():
             print("An error has happened when disabling account")
             print(e.stderr.decode())
 
+def disable_defualt_accounts():
+    disable_guest_account = "net user Guest /active:no"
+    disable_admin_account = "net user Administrator /active:no"
+
+    run_cmd(disable_guest_account, "Guest account is disabled", "Failed to disable Guest account", f"Guest is now disabled {now}", f"Failed to disable Guest account {now}")
+    run_cmd(disable_admin_account, "Administrator account is disabled", "Failed to disable Administrator account", f"Administrator is now disabled {now}", f"Failed to disable Administrator account {now}")
+
+def login_times():
+    """Allows user to setup login restrictions for accounts"""
+    username = input("Enter account name: ")
+    days = input(f"Enter the days for {username} (ex M-F): ")
+    times = input(f"Enter the times for the {username} (9am-5pm)")
+
+    command = f"net user {username} /times:{days},{times}"
+
+    run_cmd(command, f"{username} is now active during {days} and {times}", "Failed to setup login times", f"{username} can now login during {days} {times} {now}")
+
+def all_groups_for_user():
+    print("See all groups that belong to the user")
+    username = input("Enter username: ")
+    command = f"net user {username} | findstr ""Local Group Memberships"
+
+    run_cmd(command, "Got all user groups", "Failed to get all user assigned groups", f"{username} asspcoated groups listed {now}", f"Failed to get all {username} associated groups listed {now} ")
 
 def run_cmd(cmd, success_msg, error_msg, success_log_msg, failed_log_msg):
     try:
@@ -130,7 +156,8 @@ if is_admin():
         while True:
             print("1. To Create account \t   2. Make account admin")
             print("3. Manually add to group   4. Delete account")
-            print("5. Enable/Disable Accounts 6. Quit program")
+            print("5. Enable/Disable Accounts 6. Disable defualt accounts")
+            print("7. Listed associated groups to user 8. quit")
             print("-"*50)
 
             # Valildates the user entered a number
@@ -138,6 +165,7 @@ if is_admin():
                 choice = int(input("Your choice: "))
             except ValueError:
                 print("Please enter a number")
+                continue
 
             options = {
                 1: create_account,
@@ -145,7 +173,9 @@ if is_admin():
                 3: assign_account_to_group,
                 4: delete_account,
                 5: enable_disable_account,
-                6: quit,
+                6: disable_defualt_accounts,
+                7: all_groups_for_user,
+                8: quit,
             }
 
             # Runs the funciton based of user input
