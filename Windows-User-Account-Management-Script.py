@@ -154,9 +154,9 @@ if is_admin():
         print("ctrl-c to quit")
 
         while True:
-            print("1. To Create account \t   2. Make account admin")
-            print("3. Manually add to group   4. Delete account")
-            print("5. Enable/Disable Accounts 6. Disable defualt accounts")
+            print("1. Create account \t\t    2. Make account admin")
+            print("3. Manually add to group \t    4. Delete account")
+            print("5. Enable/Disable Accounts \t    6. Disable defualt accounts")
             print("7. Listed associated groups to user 8. quit")
             print("-"*50)
 
