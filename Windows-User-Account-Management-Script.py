@@ -38,6 +38,17 @@ def assign_account_to_group():
 
     run_cmd(get_groups_cmd, "All groups are listed", "Error getting groups", f"Get all users {now}", f"Failed to get all user {now}")
 
+def remove_account_from_group():
+    """Remove user from assigned group"""
+    print("Remove user from group")
+    
+    username = input("Enter username: ")
+    group = input(f"Remove {username} from: ")
+    command = f"net localgroup \"{username}\" " f"\"{group}\" /DELETE"
+
+    run_cmd(command, f"Removed {username} from {group}", f"Failed to remove {username} from {group}", f"Successfully removed {username} from {group} {now}")
+
+
 def check_password():
     """Verifies password to create account"""
     password = getpass("Enter password for account: ")
@@ -52,11 +63,12 @@ def check_password():
 
 def delete_account():
     """Deletes local account off computer"""
-    list_accounts = "net user"
-    run_cmd(list_accounts, "Got all users successfully", "Failed to get all users", f"All users {now}", f"Failed to get all {now}")
-
+    command = "net user"
+    run_cmd(command, "Got all users successfully", "Failed to get all users", f"All users {now}", f"Failed to get all {now}")
+    
+    # Removes \n and other text from the net user command
     try:
-        all_accounts = subprocess.run(list_accounts, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        all_accounts = subprocess.run(command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if all_accounts.returncode == 0:
             print("All Local Accounts are listed")
@@ -127,7 +139,7 @@ def login_times():
 def all_groups_for_user():
     print("See all groups that belong to the user")
     username = input("Enter username: ")
-    command = f"net user {username} | findstr ""Local Group Memberships"
+    command = f"net user {username} | findstr \"Local Group Memberships\""
 
     run_cmd(command, "Got all user groups", "Failed to get all user assigned groups", f"{username} asspcoated groups listed {now}", f"Failed to get all {username} associated groups listed {now} ")
 
